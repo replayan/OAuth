@@ -103,13 +103,17 @@ app.get("/register", (req, res) => {
 });
 
 app.get("/secrets", (req, res) => {
-  User.find({ secret: { $ne: null } })
-    .then((foundUsers) => {
-      res.render("secrets", { usersWithSecrets: foundUsers });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  if (req.isAuthenticated()) {
+    User.find({ secret: { $ne: null } })
+      .then((foundUsers) => {
+        res.render("secrets", { usersWithSecrets: foundUsers });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.get("/submit", (req, res) => {
